@@ -187,10 +187,11 @@ def presgan(dat, netG, netD, log_sigma, args):
 
         if epoch % args.save_imgs_every == 0:
             fake = netG(fixed_noise).detach()
+            path_to_imgs = args.results_folder + '/epoch%d'.format(epoch)
             # old
             # vutils.save_image(fake, '%s/presgan_%s_fake_epoch_%03d.png' % (args.results_folder, args.dataset, epoch), normalize=True, nrow=20) 
             for i in range(fake.size(0)): 
-                vutils.save_image(fake[i, :, :, :], '%s/presgan_%s_fake_epoch_%03d_img%03d.png' % (args.results_folder, args.dataset, epoch, i), normalize=True) 
+                vutils.save_image(fake[i, :, :, :], '%s/presgan_%s_fake_epoch_%03d_img%03d.png' % (path_to_imgs, args.dataset, epoch, i), normalize=True) 
 
 
         if epoch % args.save_ckpt_every == 0:
