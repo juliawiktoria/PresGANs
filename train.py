@@ -72,7 +72,11 @@ def dcgan(dat, netG, netD, args):
 
         if epoch % args.save_imgs_every == 0:
             fake = netG(fixed_noise).detach()
-            vutils.save_image(fake, '%s/dcgan_%s_fake_epoch_%03d.png' % (args.results_folder, args.dataset, epoch), normalize=True, nrow=20) 
+            # old version, og
+            # vutils.save_image(fake, '%s/dcgan_%s_fake_epoch_%03d.png' % (args.results_folder, args.dataset, epoch), normalize=True, nrow=20)
+            # new version trying to save separate images
+            for i in range(fake.size(0)): 
+                vutils.save_image(fake[i, :, :, :], '%s/dcgan_%s_fake_epoch_%03d_img%03d.png' % (args.results_folder, args.dataset, epoch, i), normalize=True) 
 
         if epoch % args.save_ckpt_every == 0:
             torch.save(netG.state_dict(), os.path.join(args.results_folder, 'netG_dcgan_%s_epoch_%s.pth'%(args.dataset, epoch)))
@@ -183,7 +187,11 @@ def presgan(dat, netG, netD, log_sigma, args):
 
         if epoch % args.save_imgs_every == 0:
             fake = netG(fixed_noise).detach()
-            vutils.save_image(fake, '%s/presgan_%s_fake_epoch_%03d.png' % (args.results_folder, args.dataset, epoch), normalize=True, nrow=20) 
+            # old
+            # vutils.save_image(fake, '%s/presgan_%s_fake_epoch_%03d.png' % (args.results_folder, args.dataset, epoch), normalize=True, nrow=20) 
+            for i in range(fake.size(0)): 
+                vutils.save_image(fake[i, :, :, :], '%s/presgan_%s_fake_epoch_%03d_img%03d.png' % (args.results_folder, args.dataset, epoch, i), normalize=True) 
+
 
         if epoch % args.save_ckpt_every == 0:
             torch.save(netG.state_dict(), os.path.join(args.results_folder, 'netG_presgan_%s_epoch_%s.pth'%(args.dataset, epoch)))
