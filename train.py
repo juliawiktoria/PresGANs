@@ -12,6 +12,7 @@ import math
 import utils 
 import hmc 
 
+import time
 
 from torch.distributions.normal import Normal
 
@@ -83,6 +84,9 @@ def dcgan(dat, netG, netD, args):
 
 
 def presgan(dat, netG, netD, log_sigma, args):
+
+    start_time = time.time()
+
     device = args.device
     X_training = dat['X_train'].to(device)
     fixed_noise = torch.randn(args.num_gen_images, args.nz, 1, 1, device=device)
@@ -199,4 +203,7 @@ def presgan(dat, netG, netD, log_sigma, args):
         if epoch % args.save_ckpt_every == 0:
             torch.save(netG.state_dict(), os.path.join(args.results_folder, 'netG_presgan_%s_epoch_%s.pth'%(args.dataset, epoch)))
             torch.save(log_sigma, os.path.join(args.results_folder, 'log_sigma_%s_%s.pth'%(args.dataset, epoch)))
+    elapsed_time = time.time() - start_time
+    print("Time elapse for {} epochs".format(args.epochs))
+    print(time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
             
