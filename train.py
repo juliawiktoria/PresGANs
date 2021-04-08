@@ -8,6 +8,7 @@ import seaborn as sns
 import os 
 import pickle 
 import math 
+import pandas as pd
 
 import utils 
 import hmc 
@@ -84,6 +85,8 @@ def dcgan(dat, netG, netD, args):
 
 
 def presgan(dat, netG, netD, log_sigma, args):
+
+    saving_dataframe = pd.DataFrame(columns=['dataset', 'epoch', 'elapsed_time', 'loss_d', 'loss_g', 'd(x)', 'd(g(z))', 'sigma_min', 'sigma_max'])
 
     start_time = time.time()
 
@@ -206,10 +209,10 @@ def presgan(dat, netG, netD, log_sigma, args):
             torch.save(netG.state_dict(), os.path.join(args.results_folder, 'netG_presgan_%s_epoch_%s.pth'%(args.dataset, epoch)))
             torch.save(log_sigma, os.path.join(args.results_folder, 'log_sigma_%s_%s.pth'%(args.dataset, epoch)))
         ending = time.time() - starting
-        times_array.append(ending)
-    with open("presgan_epoch_times.txt", "w") as txt_file:
-        for line in times_array:
-            txt_file.write(line + "\n")
+        df_row = [args.dataset, epoch, ending, errD.data, g_error_gan.data, D_x, str(D_G_z1) + "/" + str(D_G_z2), torch.min(sigma_x), torch.max(sigma_x)]
+        saving_dataframe.loc[epoch] = df_row
+    
+    saving_dataframe.to_csv("presgan_data.csv", index=False)
     elapsed_time = time.time() - start_time
     print("Time elapse for {} epochs".format(args.epochs))
     print(time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
