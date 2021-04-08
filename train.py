@@ -98,8 +98,10 @@ def presgan(dat, netG, netD, log_sigma, args):
         logsigma_max = math.log(math.exp(args.sigma_max) - 1.0)
     stepsize = args.stepsize_num / args.nz
     
+    times_array = []
     bsz = args.batchSize
     for epoch in range(1, args.epochs+1):
+        starting = time.time()
         for i in range(0, len(X_training), bsz): 
             sigma_x = F.softplus(log_sigma).view(1, 1, args.imageSize, args.imageSize)
 
@@ -203,6 +205,11 @@ def presgan(dat, netG, netD, log_sigma, args):
         if epoch % args.save_ckpt_every == 0:
             torch.save(netG.state_dict(), os.path.join(args.results_folder, 'netG_presgan_%s_epoch_%s.pth'%(args.dataset, epoch)))
             torch.save(log_sigma, os.path.join(args.results_folder, 'log_sigma_%s_%s.pth'%(args.dataset, epoch)))
+        ending = time.time() - starting
+        times_array.append(ending)
+    with open("presgan_epoch_times.txt", "w") as txt_file:
+        for line in times_array:
+            txt_file.write(line + "\n")
     elapsed_time = time.time() - start_time
     print("Time elapse for {} epochs".format(args.epochs))
     print(time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
