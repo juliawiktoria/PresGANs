@@ -66,7 +66,7 @@ def create_data(name, data_path, batch_size, device, imgsize, Ntrain, Ntest, n_m
                 transforms.ToTensor(),
                 transforms.Normalize((0.5,), (0.5,))]) 
 
-        mnist = torchvision.datasets.MNIST(root=data_path, download=True, transform=transform, train=True)
+        mnist = torchvision.datasets.MNIST(root=data_path, download=False, transform=transform, train=True)
         train_loader = DataLoader(mnist, batch_size=1, shuffle=True, drop_last=True, num_workers=0)
         X_training = torch.zeros(len(train_loader), nc, imgsize, imgsize)
         Y_training = torch.zeros(len(train_loader))
@@ -106,7 +106,7 @@ def create_data(name, data_path, batch_size, device, imgsize, Ntrain, Ntest, n_m
                 transforms.ToTensor(),
                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
         
-        cifar = torchvision.datasets.CIFAR10(root=data_path, download=True, transform=transform, train=True)
+        cifar = torchvision.datasets.CIFAR10(root=data_path, download=False, transform=transform, train=True)
         train_loader = DataLoader(cifar, batch_size=1, shuffle=True, num_workers=0)
         X_training = torch.zeros(len(train_loader), nc, imgsize, imgsize)
         for i, x in enumerate(train_loader):
