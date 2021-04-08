@@ -1,1 +1,5 @@
 .vscode/
+presgan_env/
+__pycache__/
+data/
+presgan_lambda_0.01/
