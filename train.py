@@ -207,6 +207,7 @@ def presgan(dat, netG, netD, log_sigma, args):
 
         if epoch % args.save_ckpt_every == 0:
             torch.save(netG.state_dict(), os.path.join(args.results_folder, 'netG_presgan_%s_epoch_%s.pth'%(args.dataset, epoch)))
+            torch.save(netD.state_dict(), os.path.join(args.results_folder, 'netD_presgan_%s_epoch_%s.pth'%(args.dataset, epoch)))
             torch.save(log_sigma, os.path.join(args.results_folder, 'log_sigma_%s_%s.pth'%(args.dataset, epoch)))
         ending = time.time() - starting
         df_row = [args.dataset, epoch, ending, errD.data, g_error_gan.data, D_x, str(D_G_z1) + "/" + str(D_G_z2), torch.min(sigma_x), torch.max(sigma_x)]
