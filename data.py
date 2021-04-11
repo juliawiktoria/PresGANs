@@ -18,7 +18,7 @@ np.random.seed(2019)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 kwargs = {'num_workers': 4, 'pin_memory': True} if torch.cuda.is_available() else {}
 
-def load_data(name, dataroot, batch_size, device, imgsize=None, 
+def load_data(name, dataroot, batch_size, device, if_download,imgsize=None, 
                 Ntrain=None, Ntest=None, n_mixtures=10, radius=3, std=0.05):
     
     print('Loading dataset {} ...'.format(name.upper()))
@@ -29,7 +29,7 @@ def load_data(name, dataroot, batch_size, device, imgsize=None,
         if not os.path.exists(data_path):
             os.makedirs(data_path)
         dat = create_data(
-            name, data_path, batch_size, device, imgsize, Ntrain, Ntest, n_mixtures, radius, std)
+            name, data_path, batch_size, device, if_download, imgsize, Ntrain, Ntest, n_mixtures, radius, std)
         if name != 'celeba':
             with open(pkl_file, 'wb') as f:
                 pickle.dump(dat, f)
@@ -38,7 +38,7 @@ def load_data(name, dataroot, batch_size, device, imgsize=None,
             dat = pickle.load(f)
     return dat 
 
-def create_data(name, data_path, batch_size, device, imgsize, Ntrain, Ntest, n_mixtures, radius, std):
+def create_data(name, data_path, batch_size, device, if_download, imgsize, Ntrain, Ntest, n_mixtures, radius, std):
     if name == 'ring':
         delta_theta = 2*np.pi / n_mixtures
         centers_x = []
@@ -66,7 +66,7 @@ def create_data(name, data_path, batch_size, device, imgsize, Ntrain, Ntest, n_m
                 transforms.ToTensor(),
                 transforms.Normalize((0.5,), (0.5,))]) 
 
-        mnist = torchvision.datasets.MNIST(root=data_path, download=False, transform=transform, train=True)
+        mnist = torchvision.datasets.MNIST(root=data_path, download=if_download, transform=transform, train=True)
         train_loader = DataLoader(mnist, batch_size=1, shuffle=True, drop_last=True, num_workers=0)
         X_training = torch.zeros(len(train_loader), nc, imgsize, imgsize)
         Y_training = torch.zeros(len(train_loader))
@@ -76,7 +76,7 @@ def create_data(name, data_path, batch_size, device, imgsize, Ntrain, Ntest, n_m
             if i % 10000 == 0:
                 print('Loading data... {}/{}'.format(i, len(train_loader)))
 
-        mnist = torchvision.datasets.MNIST(root=data_path, download=True, transform=transform, train=False)
+        mnist = torchvision.datasets.MNIST(root=data_path, download=if_download, transform=transform, train=False)
         test_loader = DataLoader(mnist, batch_size=1, shuffle=False, drop_last=True, num_workers=0)
         X_test = torch.zeros(len(test_loader), nc, imgsize, imgsize)
         Y_test = torch.zeros(len(test_loader))
@@ -106,7 +106,7 @@ def create_data(name, data_path, batch_size, device, imgsize, Ntrain, Ntest, n_m
                 transforms.ToTensor(),
                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
         
-        cifar = torchvision.datasets.CIFAR10(root=data_path, download=False, transform=transform, train=True)
+        cifar = torchvision.datasets.CIFAR10(root=data_path, download=if_download, transform=transform, train=True)
         train_loader = DataLoader(cifar, batch_size=1, shuffle=True, num_workers=0)
         X_training = torch.zeros(len(train_loader), nc, imgsize, imgsize)
         for i, x in enumerate(train_loader):
@@ -114,7 +114,7 @@ def create_data(name, data_path, batch_size, device, imgsize, Ntrain, Ntest, n_m
             if i % 10000 == 0:
                 print('i: {}/{}'.format(i, len(train_loader)))
 
-        cifar = torchvision.datasets.CIFAR10(root=data_path, download=True, transform=transform, train=False)
+        cifar = torchvision.datasets.CIFAR10(root=data_path, download=if_download, transform=transform, train=False)
         test_loader = DataLoader(cifar, batch_size=1, shuffle=False, num_workers=0)
         X_test = torch.zeros(len(test_loader), nc, imgsize, imgsize)
         for i, x in enumerate(test_loader):

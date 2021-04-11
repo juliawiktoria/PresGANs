@@ -28,6 +28,7 @@ parser.add_argument('--workers', type=int, help='number of data loading workers'
 parser.add_argument('--imageSize', type=int, default=64, help='the height / width of the input image to network')
 parser.add_argument('--Ntrain', type=int, default=60000, help='training set size for stackedmnist')
 parser.add_argument('--Ntest', type=int, default=10000, help='test set size for stackedmnist')
+parser.add_argument('--download', action='store_true', default=False, help='use to indicate you want the dataset downloaded')
 
 ###### Model arguments
 parser.add_argument('--model', required=True, help=' dcgan | presgan ')
@@ -97,7 +98,7 @@ cudnn.benchmark = True
 
 
 dat = data.load_data(args.dataset, args.dataroot, args.batchSize, 
-                        device=device, imgsize=args.imageSize, Ntrain=args.Ntrain, Ntest=args.Ntest)
+                        device=device, if_download=args.download, imgsize=args.imageSize, Ntrain=args.Ntrain, Ntest=args.Ntest)
 
 #### defining generator
 netG = nets.Generator(args.imageSize, args.nz, args.ngf, dat['nc']).to(device)
