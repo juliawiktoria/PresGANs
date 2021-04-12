@@ -103,7 +103,7 @@ def presgan(dat, netG, netD, log_sigma, args):
     
     times_array = []
     bsz = args.batchSize
-    for epoch in range(1, args.epochs+1):
+    for epoch in range(args.starting_epoch, args.epochs+1):
         starting = time.time()
         for i in range(0, len(X_training), bsz): 
             sigma_x = F.softplus(log_sigma).view(1, 1, args.imageSize, args.imageSize)

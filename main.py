@@ -72,6 +72,8 @@ parser.add_argument('--save_sigma_every', type=int, default=1, help='interval to
 parser.add_argument('--stepsize_num', type=float, default=1.0, help='initial value for hmc stepsize')
 parser.add_argument('--restrict_sigma', type=int, default=0, help='whether to restrict sigma or not')
 
+parser.add_argument('--starting_epoch', type=int, default=1, help='which epoch to start on, when resuming')
+
 
 args = parser.parse_args()
 
